@@ -24,5 +24,5 @@ RUN mkdir -p inputs outputs && chmod -R 777 inputs outputs
 # 6. EXPOSE THE CLOUD PORT (Hugging Face default)
 EXPOSE 7860
 
-# 7. LAUNCH THE BRAIN
-CMD ["python", "server.py"]
+# 7. LAUNCH THE BRAIN (Unbuffered mode for real-time logs)
+CMD ["python", "-u", "server.py"]
