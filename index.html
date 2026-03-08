@@ -481,6 +481,7 @@
     <canvas id="mask-buffer" style="display: none;"></canvas>
 
     <script>
+        const API_BASE = "http://192.168.100.30:5055"; // Your Mac's Local IP
         const dropZone = document.getElementById('drop-zone');
         const fileInput = document.getElementById('file-input');
         const editPortal = document.getElementById('edit-portal');
@@ -652,8 +653,8 @@
             formData.append('mask', buffer.toDataURL('image/png'));
 
             try {
-                // EXPLICIT PORT 5055 ONLY
-                const response = await fetch('http://127.0.0.1:5055/erase', {
+                // UNIFIED API GATEWAY
+                const response = await fetch(`${API_BASE}/erase`, {
                     method: 'POST',
                     body: formData
                 });
@@ -664,7 +665,7 @@
                 if (data.status === 'success') {
                     loaderStatus.textContent = "DEEP-CLEAN COMPLETE!";
                     const filename = data.final_file_name; // USING NEW KEY
-                    const resultUrl = `http://127.0.0.1:5055/outputs/${filename}?t=${Date.now()}`;
+                    const resultUrl = `${API_BASE}/outputs/${filename}?t=${Date.now()}`;
 
                     const resImg = new Image();
                     resImg.src = resultUrl;
