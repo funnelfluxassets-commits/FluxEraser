@@ -333,6 +333,7 @@
             }
 
             header {
+                margin-top: 10px;
                 margin-bottom: 1.25rem;
             }
 
@@ -342,7 +343,7 @@
             }
 
             header p:first-of-type {
-                font-size: 1.1rem !important;
+                font-size: 1.25rem !important;
                 margin-bottom: 0.25rem;
             }
 
@@ -357,7 +358,8 @@
             }
 
             .upload-area {
-                height: 220px;
+                aspect-ratio: 3 / 4;
+                height: auto;
             }
 
             .toolbar {
@@ -430,7 +432,7 @@
         <div class="brush-portal" id="edit-portal">
             <div class="toolbar">
                 <div class="tool-group">
-                    <button class="tool-btn active" id="btn-brush">
+                    <button class="tool-btn" id="btn-brush">
                         <i>🖌️</i>
                         <span>Brush</span>
                     </button>
@@ -447,7 +449,7 @@
 
                 <div class="tool-group">
                     <button class="secondary-btn btn" id="clear-all"
-                        style="padding: 0.5rem 1rem; font-size: 0.75rem;">Reset All</button>
+                        style="padding: 0.5rem 1rem; font-size: 0.75rem; border-radius: 12px;">Reset All</button>
                 </div>
             </div>
 
@@ -460,7 +462,8 @@
             <div class="loader" id="loader">
                 <div class="spinner"></div>
                 <div id="loader-status"
-                    style="margin-top: 1.5rem; letter-spacing: 0.2em; font-weight: 800; color: #fff;">Purifying Selected
+                    style="margin-top: 1.5rem; letter-spacing: 0.05em; font-weight: 800; color: #fff; font-size: 0.85rem; text-align: center; padding: 0 10px;">
+                    Purifying Selected
                     Pixels...</div>
             </div>
         </div>
@@ -504,7 +507,7 @@
 
         let isDrawing = false;
         let originalFile = null;
-        let currentMode = 'brush';
+        let currentMode = null; // Set to null initially so users can scroll without drawing
 
         btnBrush.onclick = () => { currentMode = 'brush'; btnBrush.classList.add('active'); btnEraser.classList.remove('active'); };
         btnEraser.onclick = () => { currentMode = 'eraser'; btnEraser.classList.add('active'); btnBrush.classList.remove('active'); };
@@ -591,11 +594,13 @@
 
         // EVENT LISTENERS - Unified for Cursor & Finger
         canvas.addEventListener('mousedown', (e) => {
+            if (!currentMode) return;
             isDrawing = true;
             draw(e);
         });
         canvas.addEventListener('mousemove', (e) => {
             updateCursor(e);
+            if (!currentMode) return;
             draw(e);
         });
 
@@ -624,12 +629,14 @@
         };
 
         canvas.addEventListener('touchstart', (e) => {
+            if (!currentMode) return;
             e.preventDefault();
             isDrawing = true;
             draw(e);
         }, { passive: false });
 
         canvas.addEventListener('touchmove', (e) => {
+            if (!currentMode) return;
             e.preventDefault();
             draw(e);
         }, { passive: false });
