@@ -1,3 +1,11 @@
+---
+title: FluxEraser Brain
+emoji: 🪄
+colorFrom: indigo
+colorTo: purple
+sdk: docker
+pinned: false
+---
 # FluxEraser | Precision AI Watermark Removal
 
 FluxEraser is a powerful, locally-hosted AI tool designed for ultra-precise watermark and object removal. It uses the state-of-the-art **LaMa (LArge Mask Inpainting)** model to synthesize realistic textures (even complex ones like swirly floors) instead of simply blurring them.
