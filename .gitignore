@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+virenv/
+.env
+
+# Project specific
+inputs/
+outputs/
+*tmp_*
+ai_pure_*
+mask_*
+brush_*
+
+# OS specific
+.DS_Store
