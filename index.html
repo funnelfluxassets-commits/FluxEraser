@@ -646,62 +646,73 @@
         eraseBtn.onclick = async () => {
             eraseBtn.disabled = true;
             loader.style.display = 'flex';
-            loaderStatus.textContent = "COMMUNICATING WITH ULTRA-AI...";
+            loaderStatus.textContent = "OPTIMIZING IMAGE FOR CLOUD...";
 
-            const formData = new FormData();
-            formData.append('image', originalFile);
-            formData.append('mask', buffer.toDataURL('image/png'));
+            // CLOUD OPTIMIZER: Scale the image down to exactly the canvas size
+            // This prevents the AI from choking on 12-Megapixel phone photos
+            const downscaledCanvas = document.createElement('canvas');
+            downscaledCanvas.width = canvas.width;
+            downscaledCanvas.height = canvas.height;
+            const dsCtx = downscaledCanvas.getContext('2d');
+            dsCtx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
 
-            try {
-                // UNIFIED API GATEWAY
-                const response = await fetch(`${API_BASE}/erase`, {
-                    method: 'POST',
-                    body: formData
-                });
+            downscaledCanvas.toBlob(async (imageBlob) => {
+                const formData = new FormData();
+                formData.append('image', imageBlob, 'optimized_image.jpg');
+                formData.append('mask', buffer.toDataURL('image/png'));
 
-                const data = await response.json();
-                console.log("AI Response:", data);
+                try {
+                    loaderStatus.textContent = "SYNTHESIZING PIXELS IN CLOUD...";
+                    // UNIFIED API GATEWAY
+                    const response = await fetch(`${API_BASE}/erase`, {
+                        method: 'POST',
+                        body: formData
+                    });
 
-                if (data.status === 'success') {
-                    loaderStatus.textContent = "DEEP-CLEAN COMPLETE!";
-                    const filename = data.final_file_name; // USING NEW KEY
-                    const resultUrl = `${API_BASE}/outputs/${filename}?t=${Date.now()}`;
+                    const data = await response.json();
+                    console.log("AI Response:", data);
 
-                    const resImg = new Image();
-                    resImg.src = resultUrl;
-                    resImg.onload = () => {
-                        bgImage.src = resultUrl;
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        bCtx.fillStyle = 'black';
-                        bCtx.fillRect(0, 0, buffer.width, buffer.height);
-                        loader.style.display = 'none';
-                        eraseBtn.textContent = "✓ Success!";
-                        eraseBtn.style.background = "var(--success)";
+                    if (data.status === 'success') {
+                        loaderStatus.textContent = "DEEP-CLEAN COMPLETE!";
+                        const filename = data.final_file_name; // USING NEW KEY
+                        const resultUrl = `${API_BASE}/outputs/${filename}?t=${Date.now()}`;
 
-                        // Show download button
-                        downloadBtn.style.display = 'flex';
+                        const resImg = new Image();
+                        resImg.src = resultUrl;
+                        resImg.onload = () => {
+                            bgImage.src = resultUrl;
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            bCtx.fillStyle = 'black';
+                            bCtx.fillRect(0, 0, buffer.width, buffer.height);
+                            loader.style.display = 'none';
+                            eraseBtn.textContent = "✓ Success!";
+                            eraseBtn.style.background = "var(--success)";
 
-                        setTimeout(() => {
-                            eraseBtn.textContent = "⚡ Erase Brushed Area";
-                            eraseBtn.style.background = "var(--gradient-highlight)";
+                            // Show download button
+                            downloadBtn.style.display = 'flex';
+
+                            setTimeout(() => {
+                                eraseBtn.textContent = "⚡ Erase Brushed Area";
+                                eraseBtn.style.background = "var(--gradient-highlight)";
+                                eraseBtn.disabled = false;
+                            }, 2000);
+                        };
+                        resImg.onerror = () => {
+                            loader.style.display = 'none';
+                            alert(`AI completed, but browser failed to load image from: ${resultUrl}`);
                             eraseBtn.disabled = false;
-                        }, 2000);
-                    };
-                    resImg.onerror = () => {
+                        };
+                    } else {
+                        alert('AI Engine Error: ' + (data.error || "Unknown Error"));
                         loader.style.display = 'none';
-                        alert(`AI completed, but browser failed to load image from: ${resultUrl}`);
                         eraseBtn.disabled = false;
-                    };
-                } else {
-                    alert('AI Engine Error: ' + (data.error || "Unknown Error"));
+                    }
+                } catch (err) {
+                    alert('Cloud Connection Error: Ensure you have "Allow Insecure Content" enabled if on tracking domains, or check internet.');
                     loader.style.display = 'none';
                     eraseBtn.disabled = false;
                 }
-            } catch (err) {
-                alert('Connection Error. Ensure server.py is running on port 5055!');
-                loader.style.display = 'none';
-                eraseBtn.disabled = false;
-            }
+            }, 'image/jpeg', 0.95);
         };
 
         downloadBtn.onclick = async () => {
