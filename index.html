@@ -449,7 +449,7 @@
 
                 <div class="tool-group">
                     <button class="secondary-btn btn" id="clear-all"
-                        style="padding: 0.5rem 1rem; font-size: 0.75rem; border-radius: 12px;">Reset All</button>
+                        style="padding: 0.5rem 1rem; font-size: 0.75rem; border-radius: 10px;">Reset All</button>
                 </div>
             </div>
 
@@ -694,6 +694,11 @@
                             loader.style.display = 'none';
                             eraseBtn.textContent = "✓ Success!";
                             eraseBtn.style.background = "var(--success)";
+
+                            // Reset mode to prevent accidental brushing after process
+                            currentMode = null;
+                            btnBrush.classList.remove('active');
+                            btnEraser.classList.remove('active');
 
                             // Show download button
                             downloadBtn.style.display = 'flex';
