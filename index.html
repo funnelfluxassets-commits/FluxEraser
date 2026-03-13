@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FluxEraser | Precision AI Watermark Removal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #585efe;
+            --bg: #020617;
+            --card-bg: #020617;
+            --border: rgba(146, 51, 234, 0.4);
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --gradient-highlight: linear-gradient(to right, #585efe, #9233EA);
+            --success: #10b981;
+            --mask-color: rgba(146, 51, 234, 0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 5rem 2rem 4rem 2rem;
+            line-height: 1.5;
+            position: relative;
+        }
+
+        .logo-container {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            z-index: 100;
+        }
+
+        .logo-container img {
+            height: 90px;
+            width: auto;
+            display: block;
+        }
+
+        .hamburger {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            z-index: 100;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 28px;
+            height: 3px;
+            background: #fff;
+            border-radius: 2px;
+            transition: opacity 0.2s ease;
+        }
+
+        .hamburger:hover span {
+            opacity: 0.7;
+        }
+
+        header {
+            text-align: center;
+            max-width: 800px;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #3b82f6, #a855f7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .main-card {
+            width: 100%;
+            max-width: 1100px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .upload-area {
+            width: 100%;
+            height: 350px;
+            border: 2px dashed var(--border);
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: #0c0e18;
+            transition: 0.3s;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: #111422;
+        }
+
+        .brush-portal {
+            display: none;
+            width: 100%;
+            position: relative;
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            touch-action: none;
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.2rem 2rem;
+            background: #0c0e18;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tool-group {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .tool-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: #fff;
+            width: 65px;
+            height: 55px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.2rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .tool-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            border-color: var(--primary);
+        }
+
+        .tool-btn:active {
+            transform: scale(0.92);
+        }
+
+        .tool-btn i {
+            font-size: 1.3rem;
+            display: block;
+            font-style: normal;
+        }
+
+        .tool-btn.active {
+            background: var(--primary);
+            border-color: #fff;
+            box-shadow: 0 0 15px rgba(88, 94, 254, 0.3);
+        }
+
+        .brush-size-label {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        #brush-size {
+            cursor: pointer;
+            width: 120px;
+            accent-color: var(--primary);
+        }
+
+        .image-viewport {
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            user-select: none;
+        }
+
+        #bg-image {
+            max-width: 100%;
+            display: block;
+            pointer-events: none;
+        }
+
+        #brush-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            cursor: none;
+            /* Hide default cursor */
+        }
+
+        #brush-cursor {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            display: none;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(0, 0, 0, 0.5);
+            background: rgba(146, 51, 234, 0.2);
+            transition: width 0.1s ease, height 0.1s ease;
+        }
+
+        .action-btns {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            border: none;
+            padding: 1.1rem 3rem;
+            border-radius: 14px;
+            font-family: inherit;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+        }
+
+        .primary-btn {
+            background: var(--gradient-highlight);
+            color: #fff;
+            box-shadow: 0 10px 25px rgba(146, 51, 234, 0.3);
+        }
+
+        .secondary-btn {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border: 1px solid var(--border);
+        }
+
+        #erase-btn:disabled {
+            opacity: 0.4;
+            cursor: wait;
+        }
+
+        .loader {
+            position: absolute;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.95);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            backdrop-filter: blur(15px);
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(88, 94, 254, 0.1);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s infinite linear;
+        }
+
+        .badge {
+            position: absolute;
+            top: 1.5rem;
+            right: 2rem;
+            background: var(--primary);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            z-index: 20;
+            letter-spacing: 0.1em;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 4.5rem 1rem 2rem 1rem;
+            }
+
+            .logo-container {
+                top: 0.75rem;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .logo-container img {
+                height: 50px;
+            }
+
+            .hamburger {
+                top: 0.75rem;
+                right: 1rem;
+            }
+
+            .hamburger span {
+                width: 24px;
+                height: 2px;
+            }
+
+            header {
+                margin-top: 10px;
+                margin-bottom: 1.25rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+                margin-bottom: 0.5rem;
+            }
+
+            header p:first-of-type {
+                font-size: 1.25rem !important;
+                margin-bottom: 0.25rem;
+            }
+
+            header p:last-of-type {
+                font-size: 0.85rem !important;
+            }
+
+            .main-card {
+                padding: 1rem;
+                gap: 1.25rem;
+                border-radius: 16px;
+            }
+
+            .upload-area {
+                aspect-ratio: 3 / 4;
+                height: auto;
+            }
+
+            .toolbar {
+                flex-direction: column;
+                padding: 1rem 0.5rem;
+                gap: 1.25rem;
+            }
+
+            .tool-group {
+                width: 100%;
+                justify-content: center;
+                gap: 0.75rem;
+            }
+
+            #brush-size {
+                flex: 1;
+                max-width: 180px;
+            }
+
+            .action-btns {
+                flex-direction: column;
+                gap: 0.75rem;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+                padding: 0.9rem;
+                font-size: 1rem;
+            }
+
+            .badge {
+                top: 0.5rem;
+                right: 0.5rem;
+                font-size: 0.55rem;
+                padding: 0.25rem 0.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="https://funnelfluxassets.com" class="logo-container">
+        <img src="assets/logo.png" alt="Funnel Flux Assets">
+    </a>
+
+    <a href="https://funnelfluxassets.com" class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+    </a>
+
+    <header>
+        <h1>Flux<em>Eraser</em> <span class="gradient-text">ULTRA-AI</span></h1>
+        <p style="color: var(--text-main); font-size: 1.5rem; font-weight: 500; margin-bottom: 0.5rem; opacity: 0.9;">
+            Remove
+            watermarks and unwanted overlays instantly.</p>
+        <p style="color: var(--text-muted); font-size: 1.1rem; letter-spacing: 0.02em;">Brush precisely over the
+            watermark to purify pixels.</p>
+    </header>
+
+    <div class="main-card">
+        <div class="upload-area" id="drop-zone">
+            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 1.5rem; opacity: 0.9;">
+                <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z">
+                </path>
+                <circle cx="12" cy="13" r="3"></circle>
+            </svg>
+            <div style="color: var(--text-main); font-size: 1.2rem; font-weight: 600;">Click to upload or <b>browse</b>
+            </div>
+            <input type="file" id="file-input" accept="image/*" style="display: none;">
+        </div>
+
+        <div class="brush-portal" id="edit-portal">
+            <div class="toolbar">
+                <div class="tool-group">
+                    <button class="tool-btn" id="btn-brush">
+                        <i>🖌️</i>
+                        <span>Brush</span>
+                    </button>
+                    <button class="tool-btn" id="btn-eraser">
+                        <i>🧼</i>
+                        <span>Eraser</span>
+                    </button>
+                </div>
+
+                <div class="tool-group">
+                    <span class="brush-size-label">Brush Size</span>
+                    <input type="range" id="brush-size" min="5" max="150" value="40">
+                </div>
+
+                <div class="tool-group">
+                    <button class="secondary-btn btn" id="clear-all"
+                        style="padding: 0.5rem 1rem; font-size: 0.75rem; border-radius: 10px;">Reset All</button>
+                </div>
+            </div>
+
+            <div class="image-viewport" id="viewport">
+                <span class="badge">PRECISION MODE</span>
+                <img id="bg-image" src="" alt="Work Area">
+                <canvas id="brush-canvas"></canvas>
+            </div>
+
+            <div class="loader" id="loader">
+                <div class="spinner"></div>
+                <div id="loader-status"
+                    style="margin-top: 1.5rem; letter-spacing: 0.05em; font-weight: 800; color: #fff; font-size: 0.85rem; text-align: center; padding: 0 10px;">
+                    Purifying Selected
+                    Pixels...</div>
+            </div>
+        </div>
+
+        <div class="action-btns" id="action-area" style="display: none;">
+            <button class="primary-btn btn" id="erase-btn">⚡ Erase Brushed Area</button>
+            <button class="secondary-btn btn" id="download-btn"
+                style="display: none; background: var(--success); border: none; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);">✨
+                Download Purified Image</button>
+            <button class="secondary-btn btn" onclick="location.reload()">Start Over</button>
+        </div>
+    </div>
+
+    <!-- Dynamic Lens Cursor -->
+    <div id="brush-cursor"></div>
+
+    <!-- Hidden canvas for the pure white mask -->
+    <canvas id="mask-buffer" style="display: none;"></canvas>
+
+    <script>
+        const API_BASE = "https://funnelfluxassets-fluxeraser-brain.hf.space"; // Global AI Brain
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const editPortal = document.getElementById('edit-portal');
+        const bgImage = document.getElementById('bg-image');
+        const canvas = document.getElementById('brush-canvas');
+        const buffer = document.getElementById('mask-buffer');
+        const ctx = canvas.getContext('2d');
+        const bCtx = buffer.getContext('2d');
+        const brushSizeInput = document.getElementById('brush-size');
+        const eraseBtn = document.getElementById('erase-btn');
+        const clearAllBtn = document.getElementById('clear-all');
+        const actionArea = document.getElementById('action-area');
+        const downloadBtn = document.getElementById('download-btn');
+        const loader = document.getElementById('loader');
+        const loaderStatus = document.getElementById('loader-status');
+        const brushCursor = document.getElementById('brush-cursor');
+
+        const btnBrush = document.getElementById('btn-brush');
+        const btnEraser = document.getElementById('btn-eraser');
+
+        let isDrawing = false;
+        let originalFile = null;
+        let currentMode = null; // Set to null initially so users can scroll without drawing
+
+        btnBrush.onclick = () => { currentMode = 'brush'; btnBrush.classList.add('active'); btnEraser.classList.remove('active'); };
+        btnEraser.onclick = () => { currentMode = 'eraser'; btnEraser.classList.add('active'); btnBrush.classList.remove('active'); };
+
+        dropZone.onclick = () => fileInput.click();
+        fileInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                originalFile = file;
+                const url = URL.createObjectURL(file);
+                bgImage.src = url;
+                bgImage.onload = () => {
+                    canvas.width = bgImage.naturalWidth;
+                    canvas.height = bgImage.naturalHeight;
+                    buffer.width = canvas.width;
+                    buffer.height = canvas.height;
+                    bCtx.fillStyle = 'black';
+                    bCtx.fillRect(0, 0, buffer.width, buffer.height);
+                    dropZone.style.display = 'none';
+                    editPortal.style.display = 'block';
+                    actionArea.style.display = 'flex';
+                    syncCanvasScale();
+                };
+            }
+        };
+
+        function syncCanvasScale() {
+            canvas.style.width = bgImage.offsetWidth + 'px';
+            canvas.style.height = bgImage.offsetHeight + 'px';
+            canvas.style.left = bgImage.offsetLeft + 'px';
+            canvas.style.top = bgImage.offsetTop + 'px';
+        }
+
+        window.onresize = syncCanvasScale;
+
+        function getCoords(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+
+            // Mobile Finger Handling
+            let clientX, clientY;
+            if (e.touches && e.touches.length > 0) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else if (e.changedTouches && e.changedTouches.length > 0) {
+                clientX = e.changedTouches[0].clientX;
+                clientY = e.changedTouches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+
+            return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            const pos = getCoords(e);
+
+            // Apply Brush size
+            const size = brushSizeInput.value;
+
+            ctx.lineWidth = size;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.globalCompositeOperation = currentMode === 'brush' ? 'source-over' : 'destination-out';
+            ctx.strokeStyle = 'rgba(146, 51, 234, 0.7)';
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+
+            bCtx.lineWidth = size;
+            bCtx.lineCap = 'round';
+            bCtx.lineJoin = 'round';
+            bCtx.globalCompositeOperation = currentMode === 'brush' ? 'source-over' : 'destination-out';
+            bCtx.strokeStyle = 'white';
+            bCtx.lineTo(pos.x, pos.y);
+            bCtx.stroke();
+            bCtx.beginPath();
+            bCtx.moveTo(pos.x, pos.y);
+        }
+
+        // EVENT LISTENERS - Unified for Cursor & Finger
+        canvas.addEventListener('mousedown', (e) => {
+            if (!currentMode) return;
+            isDrawing = true;
+            draw(e);
+        });
+        canvas.addEventListener('mousemove', (e) => {
+            updateCursor(e);
+            if (!currentMode) return;
+            draw(e);
+        });
+
+        canvas.addEventListener('mouseenter', () => {
+            brushCursor.style.display = 'block';
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            brushCursor.style.display = 'none';
+        });
+
+        function updateCursor(e) {
+            // Calculate size based on input and scale
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = rect.width / canvas.width;
+            const size = brushSizeInput.value * scaleX;
+
+            brushCursor.style.width = size + 'px';
+            brushCursor.style.height = size + 'px';
+            brushCursor.style.left = e.clientX + 'px';
+            brushCursor.style.top = e.clientY + 'px';
+        }
+
+        brushSizeInput.oninput = () => {
+            // Cursor size update is handled by mousemove, but let's force a size preview if needed
+        };
+
+        canvas.addEventListener('touchstart', (e) => {
+            if (!currentMode) return;
+            e.preventDefault();
+            isDrawing = true;
+            draw(e);
+        }, { passive: false });
+
+        canvas.addEventListener('touchmove', (e) => {
+            if (!currentMode) return;
+            e.preventDefault();
+            draw(e);
+        }, { passive: false });
+
+        window.addEventListener('mouseup', () => { isDrawing = false; ctx.beginPath(); bCtx.beginPath(); });
+        window.addEventListener('touchend', () => { isDrawing = false; ctx.beginPath(); bCtx.beginPath(); });
+
+        clearAllBtn.onclick = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            bCtx.fillStyle = 'black';
+            bCtx.fillRect(0, 0, buffer.width, buffer.height);
+        };
+
+        eraseBtn.onclick = async () => {
+            eraseBtn.disabled = true;
+            loader.style.display = 'flex';
+            loaderStatus.textContent = "OPTIMIZING IMAGE FOR CLOUD...";
+
+            // CLOUD OPTIMIZER: Scale the image down to exactly the canvas size
+            // This prevents the AI from choking on 12-Megapixel phone photos
+            const downscaledCanvas = document.createElement('canvas');
+            downscaledCanvas.width = canvas.width;
+            downscaledCanvas.height = canvas.height;
+            const dsCtx = downscaledCanvas.getContext('2d');
+            dsCtx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
+
+            downscaledCanvas.toBlob(async (imageBlob) => {
+                const formData = new FormData();
+                formData.append('image', imageBlob, 'optimized_image.jpg');
+                formData.append('mask', buffer.toDataURL('image/png'));
+
+                try {
+                    loaderStatus.textContent = "SYNTHESIZING PIXELS IN CLOUD...";
+                    // UNIFIED API GATEWAY
+                    const response = await fetch(`${API_BASE}/erase`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+                    console.log("AI Response:", data);
+
+                    if (data.status === 'success') {
+                        loaderStatus.textContent = "DEEP-CLEAN COMPLETE!";
+                        const filename = data.final_file_name; // USING NEW KEY
+                        const resultUrl = `${API_BASE}/outputs/${filename}?t=${Date.now()}`;
+
+                        const resImg = new Image();
+                        resImg.src = resultUrl;
+                        resImg.onload = () => {
+                            bgImage.src = resultUrl;
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            bCtx.fillStyle = 'black';
+                            bCtx.fillRect(0, 0, buffer.width, buffer.height);
+                            loader.style.display = 'none';
+                            eraseBtn.textContent = "✓ Success!";
+                            eraseBtn.style.background = "var(--success)";
+
+                            // Reset mode to prevent accidental brushing after process
+                            currentMode = null;
+                            btnBrush.classList.remove('active');
+                            btnEraser.classList.remove('active');
+
+                            // Show download button
+                            downloadBtn.style.display = 'flex';
+
+                            setTimeout(() => {
+                                eraseBtn.textContent = "⚡ Erase Brushed Area";
+                                eraseBtn.style.background = "var(--gradient-highlight)";
+                                eraseBtn.disabled = false;
+                            }, 2000);
+                        };
+                        resImg.onerror = () => {
+                            loader.style.display = 'none';
+                            alert(`AI completed, but browser failed to load image from: ${resultUrl}`);
+                            eraseBtn.disabled = false;
+                        };
+                    } else {
+                        alert('AI Engine Error: ' + (data.error || "Unknown Error"));
+                        loader.style.display = 'none';
+                        eraseBtn.disabled = false;
+                    }
+                } catch (err) {
+                    alert('Cloud Connection Error: Ensure you have "Allow Insecure Content" enabled if on tracking domains, or check internet.');
+                    loader.style.display = 'none';
+                    eraseBtn.disabled = false;
+                }
+            }, 'image/jpeg', 0.95);
+        };
+
+        downloadBtn.onclick = async () => {
+            try {
+                const response = await fetch(bgImage.src);
+                const blob = await response.blob();
+                const blobUrl = URL.createObjectURL(blob);
+
+                const link = document.createElement('a');
+                link.href = blobUrl;
+                link.download = `purified_${Date.now()}.jpg`;
+                document.body.appendChild(link);
+                link.click();
+
+                // Cleanup
+                document.body.removeChild(link);
+                setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+            } catch (err) {
+                console.error("Download failed:", err);
+                alert("Download failed. You can right-click the image and 'Save As' to download manually.");
+            }
+        };
+    </script>
+</body>
+
+</html>
