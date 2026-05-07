@@ -34,6 +34,37 @@
             --footer-bg: #ffffff;
         }
 
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-main);
+            transition: all 0.2s ease;
+            padding: 0;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .theme-toggle svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .dark .theme-toggle .sun-icon { display: block; }
+        .dark .theme-toggle .moon-icon { display: none; }
+        .theme-toggle .sun-icon { display: none; }
+        .theme-toggle .moon-icon { display: block; }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -231,6 +262,10 @@
                 </svg>
                 <span>FUNNELFLUX ASSETS</span>
             </a>
+            <button class="theme-toggle" id="theme-toggle" title="Toggle Theme">
+                <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            </button>
         </div>
     </header>
 
@@ -268,18 +303,33 @@
         <div class="footer-nav">
             <a href="privacy-policy.html" class="footer-link">PRIVACY POLICY</a>
             <a href="terms-of-service.html" class="footer-link">TERMS OF SERVICE</a>
-            <a href="https://funnelfluxassets.com/support" class="footer-link">SUPPORT</a>
         </div>
         <p class="copyright">© 2026 FunnelFlux Assets. All rights reserved.</p>
     </footer>
 
     <script>
-        // Synchronize theme with main site
-        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
+        const themeToggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+
+        const setTheme = (theme) => {
+            html.classList.remove('light', 'dark');
+            html.classList.add(theme);
+            localStorage.setItem('theme', theme);
+        };
+
+        themeToggle.onclick = () => {
+            const current = html.classList.contains('dark') ? 'light' : 'dark';
+            setTheme(current);
+        };
+
+        // Initialize
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            setTheme(savedTheme);
+        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            setTheme('dark');
         } else {
-            document.documentElement.classList.remove('dark');
-            document.documentElement.classList.add('light');
+            setTheme('light');
         }
     </script>
 </body>
