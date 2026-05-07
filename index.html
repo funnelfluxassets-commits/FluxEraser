@@ -584,7 +584,32 @@
             }
         }
 
+        @media (max-width: 1024px) {
+            .ff-assets-btn {
+                padding: 0.35rem 0.9rem;
+                font-size: 0.65rem;
+            }
+        }
+
         @media (max-width: 640px) {
+            .site-header {
+                padding: 0 1rem;
+            }
+
+            .ff-assets-btn span {
+                display: none;
+            }
+
+            .ff-assets-btn {
+                padding: 0.5rem;
+                aspect-ratio: 1;
+                border-radius: 50%;
+            }
+
+            .header-right {
+                gap: 0.75rem;
+            }
+
             body {
                 padding: calc(100px + 35px) 1.5rem 0 1.5rem;
             }
