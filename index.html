@@ -184,33 +184,17 @@
         }
 
         .header-left span {
-            font-weight: 800;
-            font-size: 1.5rem;
-            letter-spacing: -0.04em;
-            color: var(--text-main);
+            display: none; /* Match main site: only logo */
         }
 
         .header-right {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 1.5rem;
         }
 
         .ff-assets-btn {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            border-radius: 10px;
-            font-size: 0.7rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            text-decoration: none;
-            color: #3b82f6;
-            border: 1px solid rgba(59, 130, 246, 0.5);
-            box-shadow: 0 0 10px rgba(59, 130, 246, 0.1);
-            transition: all 0.2s ease;
+            display: none; /* Removing text button as per visual match with main site header */
         }
 
         .ff-assets-btn:hover {
@@ -253,28 +237,25 @@
         /* Footer Styles */
         .site-footer {
             width: 100%;
-            border-top: 1px solid var(--border);
-            padding: 4rem 2rem 3rem 2rem;
+            padding: 3rem 2rem;
             margin-top: 5rem;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 2rem;
+            gap: 0.5rem;
             text-align: center;
         }
 
         .footer-links {
             display: flex;
-            gap: 2rem;
-            flex-wrap: wrap;
-            justify-content: center;
+            gap: 1rem;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
         }
 
         .footer-link {
-            font-size: 0.7rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
             color: var(--text-muted);
             text-decoration: none;
             transition: color 0.2s ease;
@@ -285,9 +266,9 @@
         }
 
         .copyright {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
-            font-weight: 500;
+            font-weight: 400;
         }
 
         .main-card {
@@ -660,14 +641,9 @@
 
     <header class="site-header">
         <a href="https://funnelfluxassets.com" class="header-left">
-            <img src="assets/logo.png" alt="FluxEraser Logo">
-            <span>FluxEraser</span>
+            <img src="assets/logo.png" alt="FunnelFlux Assets">
         </a>
         <div class="header-right">
-            <a href="https://funnelfluxassets.com" class="ff-assets-btn">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                FunnelFlux Assets
-            </a>
             <button class="theme-toggle" id="theme-toggle" title="Toggle Theme">
                 <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
                 <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
@@ -748,15 +724,12 @@
     </div>
 
     <footer class="site-footer">
-        <a href="https://funnelfluxassets.com" class="ff-assets-btn" style="padding: 0.8rem 1.5rem; font-size: 0.8rem;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-            FunnelFlux Assets
-        </a>
         <div class="footer-links">
-            <a href="#" class="footer-link">Privacy Policy</a>
             <a href="#" class="footer-link">Terms of Service</a>
+            <span>-</span>
+            <a href="#" class="footer-link">Privacy Policy</a>
         </div>
-        <p class="copyright">© 2026 FluxEraser. All rights reserved.</p>
+        <p class="copyright">© 2026 FunnelFlux Assets. All rights reserved.</p>
     </footer>
 
     <!-- Dynamic Lens Cursor -->
