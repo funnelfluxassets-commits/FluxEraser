@@ -179,10 +179,13 @@
         }
 
         .logo-icon {
-            color: var(--primary);
             display: flex;
             align-items: center;
-            filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.4));
+        }
+
+        .logo-icon img {
+            height: 32px;
+            width: auto;
         }
 
         .logo-text {
@@ -191,6 +194,7 @@
             color: var(--text-main);
             letter-spacing: -0.03em;
             text-transform: none;
+            margin-left: 0.25rem;
         }
 
         .header-left span {
@@ -685,9 +689,7 @@
     <header class="site-header">
         <a href="https://funnelfluxassets.com" class="header-left">
             <div class="logo-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                </svg>
+                <img src="assets/funnelfluxassets-favricon-500.png" alt="FluxEraser">
             </div>
             <span class="logo-text">FluxEraser</span>
         </a>
