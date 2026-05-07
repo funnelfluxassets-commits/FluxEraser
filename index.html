@@ -20,14 +20,26 @@
     <style>
         :root {
             --primary: #585efe;
-            --bg: #020617;
-            --card-bg: #020617;
-            --border: rgba(146, 51, 234, 0.4);
-            --text-main: #ffffff;
-            --text-muted: #94a3b8;
+            --bg: #f8fafc;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --border: rgba(146, 51, 234, 0.2);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
             --gradient-highlight: linear-gradient(to right, #585efe, #9233EA);
             --success: #10b981;
             --mask-color: rgba(146, 51, 234, 0.6);
+            --dot-color: rgba(148, 163, 184, 0.2);
+            --spotlight-color: rgba(59, 130, 246, 0.45);
+        }
+
+        .dark {
+            --bg: #000000;
+            --card-bg: rgba(2, 6, 23, 0.8);
+            --border: rgba(146, 51, 234, 0.4);
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --dot-color: rgba(255, 255, 255, 0.12);
+            --spotlight-color: rgba(37, 99, 235, 0.8);
         }
 
         * {
@@ -47,6 +59,30 @@
             padding: 8rem 3rem 5rem 3rem;
             line-height: 1.5;
             position: relative;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .dot-grid {
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(circle, var(--dot-color) 1.5px, transparent 1.5px);
+            background-size: 32px 32px;
+            background-attachment: fixed;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .dot-grid::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image: radial-gradient(circle, var(--spotlight-color) 2px, transparent 2px);
+            background-size: 32px 32px;
+            mask-image: radial-gradient(circle 145px at var(--mouse-x, -100%) var(--mouse-y, -100%), black 0%, transparent 100%);
+            -webkit-mask-image: radial-gradient(circle 145px at var(--mouse-x, -100%) var(--mouse-y, -100%), black 0%, transparent 100%);
+            z-index: -1;
         }
 
         .logo-container {
@@ -113,6 +149,42 @@
             -webkit-text-fill-color: transparent;
         }
 
+        .theme-toggle {
+            position: absolute;
+            top: 2rem;
+            right: 5rem;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
+            border-color: var(--primary);
+        }
+
+        .theme-toggle svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        .dark .theme-toggle .sun-icon { display: block; }
+        .dark .theme-toggle .moon-icon { display: none; }
+        .theme-toggle .sun-icon { display: none; }
+        .theme-toggle .moon-icon { display: block; }
+
         .main-card {
             width: 100%;
             max-width: 1100px;
@@ -120,10 +192,18 @@
             border: 1px solid var(--border);
             border-radius: 24px;
             padding: 2.5rem;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
             gap: 2rem;
+            backdrop-filter: blur(20px);
+            position: relative;
+            z-index: 10;
+        }
+
+        .dark .main-card {
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+            background: rgba(2, 6, 23, 0.7);
         }
 
         .upload-area {
@@ -136,12 +216,20 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            background: #0c0e18;
+            background: rgba(255, 255, 255, 0.02);
             transition: 0.3s;
+        }
+
+        .dark .upload-area {
+            background: #0c0e18;
         }
 
         .upload-area:hover {
             border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .dark .upload-area:hover {
             background: #111422;
         }
 
@@ -161,8 +249,12 @@
             align-items: center;
             justify-content: space-between;
             padding: 1.2rem 2rem;
-            background: #0c0e18;
+            background: rgba(255, 255, 255, 0.05);
             border-bottom: 1px solid var(--border);
+        }
+
+        .dark .toolbar {
+            background: #0c0e18;
         }
 
         .tool-group {
@@ -317,7 +409,8 @@
         .loader {
             position: absolute;
             inset: 0;
-            background: rgba(2, 6, 23, 0.95);
+            background: var(--bg);
+            opacity: 0.95;
             display: none;
             flex-direction: column;
             align-items: center;
@@ -464,11 +557,18 @@
         <img src="assets/logo.png" alt="Funnel Flux Assets">
     </a>
 
+    <button class="theme-toggle" id="theme-toggle" title="Toggle Theme">
+        <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+    </button>
+
     <a href="https://funnelfluxassets.com" class="hamburger">
         <span></span>
         <span></span>
         <span></span>
     </a>
+
+    <div class="dot-grid"></div>
 
     <header>
         <h1>Flux<em>Eraser</em> <span class="gradient-text">ULTRA-AI</span></h1>
@@ -481,8 +581,8 @@
 
     <div class="main-card">
         <div class="upload-area" id="drop-zone">
-            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"
-                stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 1.5rem; opacity: 0.9;">
+            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 1.5rem; opacity: 0.9; color: var(--text-main);">
                 <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z">
                 </path>
                 <circle cx="12" cy="13" r="3"></circle>
@@ -547,6 +647,39 @@
     <canvas id="mask-buffer" style="display: none;"></canvas>
 
     <script>
+        // Theme Management
+        const themeToggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+        
+        function setTheme(isDark) {
+            if (isDark) {
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Initialize Theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            setTheme(false);
+        } else {
+            // Default to dark for premium feel
+            setTheme(true);
+        }
+
+        themeToggle.onclick = () => {
+            setTheme(!html.classList.contains('dark'));
+        };
+
+        // Spotlight Effect
+        window.addEventListener('mousemove', (e) => {
+            document.body.style.setProperty('--mouse-x', `${e.clientX}px`);
+            document.body.style.setProperty('--mouse-y', `${e.clientY}px`);
+        });
+
         const API_BASE = "https://funnelfluxassets-fluxeraser-brain.hf.space"; // Global AI Brain
         const dropZone = document.getElementById('drop-zone');
         const fileInput = document.getElementById('file-input');
