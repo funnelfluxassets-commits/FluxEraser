@@ -39,7 +39,7 @@
 
         .dark {
             --bg: #000000;
-            --card-bg: rgba(2, 6, 23, 0.8);
+            --card-bg: #0A0A0A;
             --border: rgba(59, 130, 246, 0.4);
             --text-main: #ffffff;
             --text-muted: #94a3b8;
@@ -277,6 +277,80 @@
         .theme-toggle .moon-icon { display: block; }
 
         /* Footer Styles */
+        .how-to-section {
+            width: 100%;
+            max-width: 1200px;
+            margin-bottom: 100px;
+            padding: 0 1.5rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 3rem;
+            letter-spacing: -0.02em;
+            color: var(--text-main);
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+
+        .step-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 2.5rem 2rem;
+            border-radius: 24px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .step-num {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 1.25rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .step-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .step-card p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 1024px) {
+            .steps-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .steps-grid {
+                grid-template-columns: 1fr;
+            }
+            .section-title {
+                font-size: 1.75rem;
+                margin-bottom: 2rem;
+            }
+        }
+
         .site-footer {
             width: 100vw;
             margin-left: -3rem; /* Compensate for body padding */
@@ -812,6 +886,32 @@
             <button class="secondary-btn btn" onclick="location.reload()">Start Over</button>
         </div>
     </div>
+
+    <section class="how-to-section">
+        <h2 class="section-title">How to use FluxEraser</h2>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-num">Step 01</div>
+                <h3>Upload</h3>
+                <p>Select the image you want to clean. We support JPEG, PNG and WebP files up to 10MB.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-num">Step 02</div>
+                <h3>Brush</h3>
+                <p>Use the precision brush to highlight the watermark, logo, or object you want to remove.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-num">Step 03</div>
+                <h3>Purify</h3>
+                <p>Click "Erase" and let our neural network reconstruct the pixels behind the object.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-num">Step 04</div>
+                <h3>Download</h3>
+                <p>Preview your result and download the high-resolution purified image to your device.</p>
+            </div>
+        </div>
+    </section>
 
     <footer class="site-footer">
         <a href="https://funnelfluxassets.com" class="ff-assets-btn" style="box-shadow: 0 0 30px rgba(59, 130, 246, 0.15);">
