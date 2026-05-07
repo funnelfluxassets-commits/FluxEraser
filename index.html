@@ -178,14 +178,10 @@
             text-decoration: none;
         }
 
-        .logo-icon {
-            display: flex;
-            align-items: center;
-        }
-
-        .logo-icon img {
+        .logo-img {
             height: 32px;
             width: auto;
+            display: block;
         }
 
         .logo-text {
@@ -194,11 +190,11 @@
             color: var(--text-main);
             letter-spacing: -0.03em;
             text-transform: none;
-            margin-left: 0.25rem;
+            margin-left: 0.1rem;
         }
 
         .header-left span {
-            display: none; /* Match main site: only logo */
+            display: inline-block;
         }
 
         .header-right {
@@ -688,9 +684,7 @@
 
     <header class="site-header">
         <a href="https://funnelfluxassets.com" class="header-left">
-            <div class="logo-icon">
-                <img src="assets/funnelfluxassets-favricon-500.png" alt="FluxEraser">
-            </div>
+            <img src="./assets/funnelfluxassets-favricon-500.png" alt="FluxEraser" class="logo-img">
             <span class="logo-text">FluxEraser</span>
         </a>
         <div class="header-right">
