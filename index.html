@@ -185,12 +185,21 @@
         }
 
         .logo-text {
+            display: flex;
+            align-items: center;
             font-size: 1.4rem;
             font-weight: 800;
-            color: var(--text-main);
             letter-spacing: -0.03em;
             text-transform: none;
-            margin-left: 0.1rem;
+            margin-left: 0.5rem;
+        }
+
+        .logo-text-white {
+            color: var(--text-main);
+        }
+
+        .logo-text-blue {
+            color: var(--primary);
         }
 
         .header-left span {
@@ -685,6 +694,9 @@
     <header class="site-header">
         <a href="https://funnelfluxassets.com" class="header-left">
             <img src="./assets/funnelfluxassets-favricon-500.png" alt="FluxEraser" class="logo-img">
+            <div class="logo-text">
+                <span class="logo-text-white">Flux</span><span class="logo-text-blue">Eraser</span>
+            </div>
         </a>
         <div class="header-right">
             <a href="https://funnelfluxassets.com" class="ff-assets-btn">
